@@ -1,0 +1,23 @@
+{
+  "name": "thinking-state",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "flubber": "^0.4.2",
+    "framer-motion": "^12.38.0",
+    "next": "^16.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-grab": "^0.1.29"
+  },
+  "devDependencies": {
+    "@types/three": "^0.157.0",
+    "agentation": "^3.0.2"
+  }
+}

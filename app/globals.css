@@ -1,0 +1,88 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #060a0f;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 24px 80px;
+}
+
+/* ── Card grid ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 220px);
+  grid-template-rows: repeat(3, 220px);
+  gap: 12px;
+}
+
+.card {
+  background: #0d1117;
+  border: 1px solid #1a2030;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card--empty {
+  background: transparent;
+  border: 1px dashed #0f1620;
+}
+
+/* ── Layout & Controls ── */
+.main-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #0d1117;
+  border: 1px solid #1a2030;
+  border-radius: 12px;
+  padding: 24px;
+  width: 250px;
+}
+
+.controls-panel h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #1a2030;
+  padding-bottom: 8px;
+}
+
+.controls-panel button {
+  background: #006fcf;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.controls-panel button:hover {
+  background: #1a8ff5;
+}
+
+.controls-panel .control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.controls-panel label {
+  font-size: 0.9rem;
+  color: #8b949e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

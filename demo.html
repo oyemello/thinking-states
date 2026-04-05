@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking State — Live Demo (CDN)</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #060a0f; color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; padding: 56px 24px 80px;
+}
+.page-title { font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: #2a3040; margin-bottom: 8px; }
+.page-title span { color: #00BFFF; opacity: 0.7; }
+.page-sub  { font-size: 11px; color: #1e2535; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 56px; }
+.grid { display: grid; grid-template-columns: repeat(3, 280px); gap: 1px; background: #0f141c; border: 1px solid #0f141c; border-radius: 2px; overflow: visible; }
+.cell { background: #060a0f; padding: 44px 28px 40px; display: flex; flex-direction: column; align-items: center; gap: 36px; }
+.cell-meta { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tier  { font-size: 9px;  letter-spacing: 4px; text-transform: uppercase; color: #00BFFF; opacity: 0.6; }
+.name  { font-size: 15px; font-weight: 600; color: #c8d4e8; }
+.tech  { font-size: 10px; color: #1e2535; letter-spacing: 1px; text-align: center; line-height: 1.7; max-width: 200px; }
+.stage { font-size: 9px;  letter-spacing: 3px; text-transform: uppercase; color: #00BFFF; opacity: 0.5; min-height: 14px; text-align: center; }
+
+/* V1 CSS keyframes */
+.v1-wrap  { width: 80px; height: 80px; position: relative; display: flex; align-items: center; justify-content: center; }
+.v1-shape { width: 78px; height: 78px; position: relative; overflow: hidden; animation: v1-morph 5.4s cubic-bezier(0.4,0,0.2,1) infinite; }
+.v1-fill  { position: absolute; inset: 0; background: #00BFFF; animation: v1-fill-fade 5.4s ease-in-out infinite; }
+.v1-svg-layer  { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; animation: v1-globe-fade 5.4s ease-in-out infinite; }
+.v1-logo-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; animation: v1-logo-fade 5.4s ease-in-out infinite; }
+@keyframes v1-morph      { 0%,16%{border-radius:50%} 29%,64%{border-radius:6px} 77%,100%{border-radius:50%} }
+@keyframes v1-fill-fade  { 0%,16%{opacity:0} 27%,66%{opacity:1} 77%,100%{opacity:0} }
+@keyframes v1-globe-fade { 0%,12%{opacity:1} 24%,73%{opacity:0} 84%,100%{opacity:1} }
+@keyframes v1-logo-fade  { 0%,34%{opacity:0} 42%,56%{opacity:1} 64%,100%{opacity:0} }
+
+/* V3 Three.js */
+.v3-wrap   { position: relative; width: 130px; height: 130px; }
+.v3-canvas { display: block; width: 130px; height: 130px; }
+.v3-logo   { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; transition: opacity 0.55s ease-in-out; }
+</style>
+</head>
+<body>
+<p class="page-title">One World · One Service — <span>Thinking State</span></p>
+<p class="page-sub">Globe → Cube → Logo · Three implementations</p>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useEffect, useRef, useState } = React;
+
+const easeIO = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+const clamp  = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+const lerp   = (a,b,t) => a+(b-a)*t;
+
+function GlobeSVG({ size=72 }) {
+  const cx=size/2, cy=size/2, r=size/2-size*0.04, sw=size*0.021, c='#00BFFF';
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{overflow:'visible'}}>
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={c} strokeWidth={sw*1.2} opacity="0.9"/>
+      <ellipse cx={cx} cy={cy-r*.50} rx={r*.866} ry={r*.22} fill="none" stroke={c} strokeWidth={sw} opacity=".70"/>
+      <ellipse cx={cx} cy={cy}       rx={r}       ry={r*.27} fill="none" stroke={c} strokeWidth={sw} opacity=".75"/>
+      <ellipse cx={cx} cy={cy+r*.50} rx={r*.866} ry={r*.22} fill="none" stroke={c} strokeWidth={sw} opacity=".70"/>
+      <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={c} strokeWidth={sw} opacity=".65"/>
+      <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={c} strokeWidth={sw} opacity=".52" transform={`rotate(60 ${cx} ${cy})`}/>
+      <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={c} strokeWidth={sw} opacity=".52" transform={`rotate(-60 ${cx} ${cy})`}/>
+    </svg>
+  );
+}
+
+function AmexLogo({ size=13, color='#001a4d' }) {
+  return <span style={{fontFamily:"'Arial Black','Helvetica Neue',sans-serif",fontSize:size,fontWeight:900,letterSpacing:'0.15em',color,userSelect:'none'}}>AMEX</span>;
+}
+
+/* ── V1 Light ── */
+function LightVersion() {
+  const CYCLE=5400;
+  const [stage,setStage]=useState('Globe');
+  useEffect(()=>{
+    const pts=[[0,'Globe'],[900,'Morphing →'],[1566,'Cube settled'],[2268,'Logo visible'],[3024,'Logo fading'],[3510,'Morphing ←'],[4200,'Globe']];
+    let id; const tick=()=>{ const now=Date.now()%CYCLE; let s=pts[0][1]; for(const[t,n]of pts)if(now>=t)s=n; setStage(s); id=requestAnimationFrame(tick); };
+    id=requestAnimationFrame(tick); return()=>cancelAnimationFrame(id);
+  },[]);
+  return (
+    <div className="cell">
+      <div className="cell-meta"><span className="tier">Light</span><span className="name">CSS + SVG</span><span className="tech">Pure @keyframes · Zero JS animation · ~50 lines CSS</span></div>
+      <div className="v1-wrap"><div className="v1-shape"><div className="v1-fill"/><div className="v1-svg-layer"><GlobeSVG size={78}/></div><div className="v1-logo-layer"><AmexLogo/></div></div></div>
+      <div className="stage">{stage}</div>
+    </div>
+  );
+}
+
+/* ── V2 Medium — ThinkingState ── */
+function morphPath(t,cx,cy,r) {
+  const k=0.5523*r, lp=(a,b)=>lerp(a,b,t).toFixed(3), cp=(cx_c,cy_c,sx,sy)=>`${lp(cx_c,sx)},${lp(cy_c,sy)}`;
+  const [tx,ty]=[cx,cy-r],[rx,ry]=[cx+r,cy],[bx,by]=[cx,cy+r],[lx,ly]=[cx-r,cy];
+  const [TRx,TRy]=[cx+r,cy-r],[BRx,BRy]=[cx+r,cy+r],[BLx,BLy]=[cx-r,cy+r],[TLx,TLy]=[cx-r,cy-r];
+  return [`M ${tx},${ty}`,`C ${cp(cx+k,cy-r,TRx,TRy)} ${cp(cx+r,cy-k,TRx,TRy)} ${rx},${ry}`,`C ${cp(cx+r,cy+k,BRx,BRy)} ${cp(cx+k,cy+r,BRx,BRy)} ${bx},${by}`,`C ${cp(cx-k,cy+r,BLx,BLy)} ${cp(cx-r,cy+k,BLx,BLy)} ${lx},${ly}`,`C ${cp(cx-r,cy-k,TLx,TLy)} ${cp(cx-k,cy-r,TLx,TLy)} ${tx},${ty}`,'Z'].join(' ');
+}
+const PHASES=[{name:'globe',dur:1800,t0:0,t1:0},{name:'morphIn',dur:1000,t0:0,t1:1},{name:'settled',dur:1700,t0:1,t1:1},{name:'morphOut',dur:1000,t0:1,t1:0}];
+
+function ThinkingState({ size=80, color='#00BFFF', logo='AMEX', onPhase }) {
+  const [t,setT]=useState(0), [logoOp,setLogoOp]=useState(0);
+  useEffect(()=>{
+    let idx=0,start=performance.now(),animId;
+    const tick=(now)=>{
+      animId=requestAnimationFrame(tick);
+      const ph=PHASES[idx], prog=clamp((now-start)/ph.dur,0,1), newT=lerp(ph.t0,ph.t1,easeIO(prog));
+      setT(newT); setLogoOp(ph.name==='settled'&&prog>0.20&&prog<0.78?1:0);
+      if(prog>=1){ const next=PHASES[(idx+1)%PHASES.length]; onPhase?.(next.name); idx=(idx+1)%PHASES.length; start=now; }
+    };
+    animId=requestAnimationFrame(tick); return()=>cancelAnimationFrame(animId);
+  },[]);
+  const cx=size/2,cy=size/2,r=size*0.35,path=morphPath(t,cx,cy,r),sw=size*0.019;
+  const globeOp=clamp(1-t*2.2,0,1),fillOp=clamp((t-0.28)/0.72,0,1),depthOp=clamp((t-0.80)/0.20,0,1);
+  const DX=size*0.125,DY=-(size*0.10);
+  const TL=[cx-r,cy-r],TR=[cx+r,cy-r],BR=[cx+r,cy+r];
+  const topPts=`${TL[0]+DX},${TL[1]+DY} ${TR[0]+DX},${TR[1]+DY} ${TR[0]},${TR[1]} ${TL[0]},${TL[1]}`;
+  const rgtPts=`${TR[0]},${TR[1]} ${TR[0]+DX},${TR[1]+DY} ${BR[0]+DX},${BR[1]+DY} ${BR[0]},${BR[1]}`;
+  return (
+    <div style={{position:'relative',width:size,height:size,display:'inline-flex'}}>
+      <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{display:'block',overflow:'visible'}}>
+        <g opacity={depthOp}>
+          <polygon points={topPts} fill="#22d4ff" opacity=".88"/>
+          <polygon points={rgtPts} fill="#0082b8" opacity=".95"/>
+          <line x1={TL[0]} y1={TL[1]} x2={TL[0]+DX} y2={TL[1]+DY} stroke="#005580" strokeWidth={sw} opacity=".6"/>
+          <line x1={TR[0]} y1={TR[1]} x2={TR[0]+DX} y2={TR[1]+DY} stroke="#005580" strokeWidth={sw} opacity=".6"/>
+          <line x1={BR[0]} y1={BR[1]} x2={BR[0]+DX} y2={BR[1]+DY} stroke="#005580" strokeWidth={sw} opacity=".6"/>
+        </g>
+        <path d={path} fill={`rgba(0,191,255,${fillOp.toFixed(3)})`} stroke={color} strokeWidth={sw}/>
+        <g opacity={globeOp.toFixed(3)}>
+          <ellipse cx={cx} cy={cy-r*.50} rx={r*.866} ry={r*.22} fill="none" stroke={color} strokeWidth={sw} opacity=".70"/>
+          <ellipse cx={cx} cy={cy}       rx={r}       ry={r*.27} fill="none" stroke={color} strokeWidth={sw} opacity=".75"/>
+          <ellipse cx={cx} cy={cy+r*.50} rx={r*.866} ry={r*.22} fill="none" stroke={color} strokeWidth={sw} opacity=".70"/>
+          <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={color} strokeWidth={sw} opacity=".65"/>
+          <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={color} strokeWidth={sw} opacity=".52" transform={`rotate(60 ${cx} ${cy})`}/>
+          <ellipse cx={cx} cy={cy} rx={r*.30} ry={r} fill="none" stroke={color} strokeWidth={sw} opacity=".52" transform={`rotate(-60 ${cx} ${cy})`}/>
+        </g>
+      </svg>
+      {logo&&<div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',opacity:logoOp,transition:'opacity 0.42s ease-in-out',pointerEvents:'none',fontFamily:"'Arial Black','Helvetica Neue',sans-serif",fontSize:size*0.16,fontWeight:900,letterSpacing:'0.12em',color:'#001a4d',userSelect:'none'}}>{logo}</div>}
+    </div>
+  );
+}
+
+function MediumVersion() {
+  const [stage,setStage]=useState('Globe');
+  const labels={globe:'Globe',morphIn:'Morphing sphere → cube',settled:'Logo visible',morphOut:'Morphing cube → sphere'};
+  return (
+    <div className="cell">
+      <div className="cell-meta"><span className="tier">Medium</span><span className="name">SVG Path Morph</span><span className="tech">Bezier CP lerp · Same anchors, morphing controls · Isometric depth faces</span></div>
+      <ThinkingState size={80} logo="AMEX" onPhase={p=>setStage(labels[p]??p)}/>
+      <div className="stage">{stage}</div>
+    </div>
+  );
+}
+
+/* ── V3 Heavy ── */
+const V3P=['globe','morphIn','cubeRotate','settled','morphOut'];
+const V3F={globe:160,morphIn:70,cubeRotate:52,settled:100,morphOut:70};
+const V3L={globe:'Globe wireframe',morphIn:'Morphing →',cubeRotate:'Cube rotating',settled:'Logo visible',morphOut:'Morphing ←'};
+
+function HeavyVersion() {
+  const canvasRef=useRef(null);
+  const [logoOp,setLogoOp]=useState(0);
+  const [label,setLabel]=useState('Globe wireframe');
+  useEffect(()=>{
+    const canvas=canvasRef.current; if(!canvas||!window.THREE)return;
+    const THREE=window.THREE;
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setSize(130,130); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2)); renderer.setClearColor(0x000000,0);
+    const scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(38,1,0.1,100); camera.position.z=5;
+    const globeMat=new THREE.LineBasicMaterial({color:0x00BFFF,transparent:true,opacity:1});
+    const globe=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.SphereGeometry(1.3,16,12)),globeMat); scene.add(globe);
+    const boxGeo=new THREE.BoxGeometry(2.2,2.2,2.2);
+    const boxMat=new THREE.MeshPhongMaterial({color:0x00BFFF,transparent:true,opacity:0,shininess:55,specular:0x55ccff});
+    const cubeMesh=new THREE.Mesh(boxGeo,boxMat); scene.add(cubeMesh);
+    const edgeMat=new THREE.LineBasicMaterial({color:0x004466,transparent:true,opacity:0});
+    const cubeEdge=new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo),edgeMat); scene.add(cubeEdge);
+    scene.add(new THREE.AmbientLight(0xffffff,0.35));
+    const key=new THREE.DirectionalLight(0xffffff,0.95); key.position.set(4,5,5); scene.add(key);
+    const fill=new THREE.DirectionalLight(0x0055aa,0.35); fill.position.set(-3,-2,-3); scene.add(fill);
+    let phaseIdx=0,pf=0,globeRotY=0,cubeRotY=Math.PI/4,cubeRotX=Math.PI/6,logoShown=false,labelRef='',animId;
+    const tick=()=>{
+      animId=requestAnimationFrame(tick); pf++;
+      const phase=V3P[phaseIdx],dur=V3F[phase],t=clamp(pf/dur,0,1),et=easeIO(t);
+      if(V3L[phase]!==labelRef){labelRef=V3L[phase];setLabel(labelRef);}
+      if(phase==='globe'){globeRotY+=0.018;globe.rotation.y=globeRotY;globeMat.opacity=1;boxMat.opacity=0;edgeMat.opacity=0;cubeRotY=Math.PI/4;cubeRotX=Math.PI/6;logoShown=false;}
+      else if(phase==='morphIn'){globeRotY+=0.018*(1-et);globe.rotation.y=globeRotY;globeMat.opacity=lerp(1,0,et);boxMat.opacity=lerp(0,0.92,et);edgeMat.opacity=lerp(0,0.55,et);cubeMesh.rotation.y=cubeRotY;cubeMesh.rotation.x=cubeRotX;cubeEdge.rotation.copy(cubeMesh.rotation);}
+      else if(phase==='cubeRotate'){globeMat.opacity=0;boxMat.opacity=0.92;edgeMat.opacity=0.55;cubeMesh.rotation.y=lerp(cubeRotY,0,et);cubeMesh.rotation.x=lerp(cubeRotX,0,et);cubeEdge.rotation.copy(cubeMesh.rotation);}
+      else if(phase==='settled'){cubeMesh.rotation.set(0,0,0);cubeEdge.rotation.set(0,0,0);globeMat.opacity=0;boxMat.opacity=0.93;edgeMat.opacity=0.45;if(!logoShown&&t>0.22){logoShown=true;setLogoOp(1);}if(logoShown&&t>0.72){logoShown=false;setLogoOp(0);}}
+      else if(phase==='morphOut'){globeMat.opacity=lerp(0,1,et);boxMat.opacity=lerp(0.93,0,et);edgeMat.opacity=lerp(0.45,0,et);globe.rotation.y=globeRotY+0.009*et*20;}
+      if(t>=1){phaseIdx=(phaseIdx+1)%V3P.length;pf=0;}
+      renderer.render(scene,camera);
+    };
+    tick(); return()=>cancelAnimationFrame(animId);
+  },[]);
+  return (
+    <div className="cell">
+      <div className="cell-meta"><span className="tier">Heavy</span><span className="name">Three.js WebGL</span><span className="tech">WebGL · EdgesGeometry wireframe · PhongMaterial · rAF frame loop</span></div>
+      <div className="v3-wrap">
+        <canvas ref={canvasRef} className="v3-canvas" width={130} height={130}/>
+        <div className="v3-logo" style={{opacity:logoOp}}><AmexLogo size={15} color="#001a4d"/></div>
+      </div>
+      <div className="stage">{label}</div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <p className="page-title">One World · One Service — <span>Thinking State</span></p>
+      <p className="page-sub">Globe → Cube → Logo · Three implementations</p>
+      <div className="grid"><LightVersion/><MediumVersion/><HeavyVersion/></div>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
