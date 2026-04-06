@@ -15,6 +15,9 @@ import WireframeThinkingState from './WireframeThinkingState';
 import SolidMathThinkingState from './SolidMathThinkingState';
 import OrthogonalRingsThinkingState from './OrthogonalRingsThinkingState';
 import DotParticleThinkingState from './DotParticleThinkingState';
+import Particle3DThinkingState from './Particle3DThinkingState';
+import AsciiGeometricThinkingState from './AsciiGeometricThinkingState';
+import AsciiWireframeThinkingState from './AsciiWireframeThinkingState';
 import AmexLogo from './AmexLogo';
 
 export default function ComparisonPage() {
@@ -24,16 +27,13 @@ export default function ComparisonPage() {
   const currentDurations = { globe: 1800, morphIn: 1000, settled: 1700, morphOut: 1000 };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7f9', padding: '4rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <div style={{ maxWidth: '1200px', width: '100%', marginBottom: '3rem', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', color: '#1a1a1a', marginBottom: '0.5rem', fontWeight: 700 }}>Animation Gallery</h1>
-        <p style={{ color: '#666', fontSize: '1.1rem' }}>Identical visual transitions computed through 11 different physical geometry architectures natively.</p>
+    <div className="flex flex-col items-center min-h-screen py-16 px-8 bg-background">
+      <div className="w-full max-w-6xl mb-12 text-center space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Animation Gallery</h1>
+        <p className="text-lg text-muted-foreground text-balance mx-auto">Identical visual transitions computed through 15 different physical geometry architectures natively.</p>
       </div>
 
-      <div style={{ 
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', 
-        maxWidth: '1200px', width: '100%' 
-      }}>
+      <div className="grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         
         {/* Cell 1 */}
         <Card label="1. 2D SVG Bezier Math">
@@ -110,6 +110,21 @@ export default function ComparisonPage() {
           <DotParticleThinkingState size={80} color="#006fcf" logo={<AmexLogo size={40} />} durations={currentDurations} />
         </Card>
 
+        {/* Cell 16 */}
+        <Card label="16. 3D Sphere Particles">
+          <Particle3DThinkingState size={80} color="#006fcf" logo={<AmexLogo size={40} />} durations={currentDurations} />
+        </Card>
+
+        {/* Cell 17 */}
+        <Card label="17. ASCII Geometric">
+          <AsciiGeometricThinkingState size={80} color="#006fcf" durations={currentDurations} />
+        </Card>
+
+        {/* Cell 18 */}
+        <Card label="18. ASCII Wireframe Globe">
+          <AsciiWireframeThinkingState size={80} color="#006fcf" durations={currentDurations} />
+        </Card>
+
       </div>
     </div>
   );
@@ -117,15 +132,9 @@ export default function ComparisonPage() {
 
 function Card({ label, children }) {
   return (
-    <div style={{
-      background: 'white', borderRadius: '16px', padding: '3.5rem 2rem 2.5rem 2rem',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
-      position: 'relative'
-    }}>
+    <div className="relative flex flex-col items-center justify-center p-8 pt-14 bg-card text-card-foreground shadow-sm border border-border rounded-xl">
       {label && (
-        <div style={{
-          position: 'absolute', top: '16px', left: '16px', fontSize: '13px', color: '#888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.4px'
-        }}>
+        <div className="absolute top-4 left-4 text-xs font-semibold tracking-wider uppercase text-muted-foreground">
           {label}
         </div>
       )}

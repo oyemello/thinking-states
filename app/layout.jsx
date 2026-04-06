@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
           />
         )}
       </head>
-      <body>
+      <body className="min-h-screen bg-background font-sans antialiased text-foreground">
         {children}
         {process.env.NODE_ENV === 'development' && <Agentation />}
       </body>
