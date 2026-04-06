@@ -14,6 +14,7 @@ import ClipPathThinkingState from './ClipPathThinkingState';
 import WireframeThinkingState from './WireframeThinkingState';
 import SolidMathThinkingState from './SolidMathThinkingState';
 import OrthogonalRingsThinkingState from './OrthogonalRingsThinkingState';
+import DotParticleThinkingState from './DotParticleThinkingState';
 import AmexLogo from './AmexLogo';
 
 export default function ComparisonPage() {
@@ -102,6 +103,11 @@ export default function ComparisonPage() {
         {/* Cell 14 */}
         <Card label="14. CSS Orthogonal Rings">
           <OrthogonalRingsThinkingState size={80} color="#006fcf" logo={<AmexLogo size={40} />} durations={currentDurations} />
+        </Card>
+
+        {/* Cell 15 */}
+        <Card label="15. GPU Particle Dots Only">
+          <DotParticleThinkingState size={80} color="#006fcf" logo={<AmexLogo size={40} />} durations={currentDurations} />
         </Card>
 
       </div>

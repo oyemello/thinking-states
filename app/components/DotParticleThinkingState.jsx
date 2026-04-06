@@ -29,7 +29,7 @@ function generateParticles(numParticles, r) {
     const hashA = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
     const hashB = Math.sin(i * 4.1414 + 13.311) * 82731.3341;
     const hashC = Math.sin(i * 9.8765 + 41.233) * 31415.9265;
-    
+
     const prA = hashA - Math.floor(hashA);
     const prB = hashB - Math.floor(hashB);
     const prC = hashC - Math.floor(hashC);
@@ -39,7 +39,7 @@ function generateParticles(numParticles, r) {
     const u = f((prB * 2 - 1) * r);
     const v = f((prC * 2 - 1) * r);
     const fixedR = f(r);
-    
+
     if (face===0) { cx=u; cy=v; cz=fixedR; }   // Front
     if (face===1) { cx=u; cy=v; cz=-fixedR; }  // Back
     if (face===2) { cx=u; cy=fixedR; cz=v; }   // Bottom
@@ -52,7 +52,7 @@ function generateParticles(numParticles, r) {
   return particles;
 }
 
-export default function ParticleThinkingState({
+export default function DotParticleThinkingState({
   size = 80,
   color = '#006fcf',
   running = true,
@@ -61,7 +61,7 @@ export default function ParticleThinkingState({
   manualProgress = null,
   onPhase,
   rotSpeed = 1,
-  angleX = -15,   
+  angleX = -15,
   angleZ = 10,
 }) {
   const containerRef = useRef(null);
@@ -85,7 +85,7 @@ export default function ParticleThinkingState({
       if (!containerRef.current) return;
 
       if (running && animProps.current.manualProgress === null) {
-        baseRotation += 0.5 * animProps.current.rotSpeed; 
+        baseRotation += 0.5 * animProps.current.rotSpeed;
       }
 
       const rotX = animProps.current.angleX;
@@ -133,15 +133,15 @@ export default function ParticleThinkingState({
 
   return (
     <div style={{ position: 'relative', width: size, height: size, display: 'inline-flex', perspective: '1200px' }} ref={containerRef}>
-      
+
       {/* Center Anchor Point explicitly tracking */}
       <div style={{
         position: 'absolute', top: offset, left: offset, width: 0, height: 0,
         transformStyle: 'preserve-3d',
         transform: `rotateX(var(--base-rot-x, ${angleX}deg)) rotateZ(var(--base-rot-z, ${angleZ}deg)) rotateY(var(--base-rot-y, 0deg))`,
       }}>
-        
-        {/* Render natively orchestrated GPU particle swarm tracking dynamic inline coordinates heavily scaled by CSS var map natively in real-time */}
+
+        {/* Render natively orchestrated GPU particle swarm — dots only, no guide lines */}
         {particles.map((p, i) => (
           <div
             key={i}
@@ -158,32 +158,6 @@ export default function ParticleThinkingState({
             }}
           />
         ))}
-
-        {/* Faint wireframes to guide the visual map */}
-        <div style={{
-          position: 'absolute', top: -r, left: -r, width: r*2, height: r*2, 
-          borderRadius: '50%', border: `1px solid ${color}`, opacity: `calc((1 - var(--morph-t)) * 0.3)`, pointerEvents: 'none'
-        }} />
-        <div style={{
-          position: 'absolute', top: -r, left: -r, width: r*2, height: r*2, 
-          borderRadius: '50%', border: `1px solid ${color}`, opacity: `calc((1 - var(--morph-t)) * 0.3)`, transform: 'rotateY(90deg)', pointerEvents: 'none'
-        }} />
-        
-        <div style={{
-          position: 'absolute', top: -r, left: -r, width: r*2, height: r*2, 
-          border: `1px solid ${color}`, opacity: `calc(var(--morph-t) * 0.3)`, pointerEvents: 'none',
-          transform: `translateZ(${r}px)`
-        }} />
-        <div style={{
-          position: 'absolute', top: -r, left: -r, width: r*2, height: r*2, 
-          border: `1px solid ${color}`, opacity: `calc(var(--morph-t) * 0.3)`, pointerEvents: 'none',
-          transform: `rotateY(90deg) translateZ(${r}px)`
-        }} />
-        <div style={{
-          position: 'absolute', top: -r, left: -r, width: r*2, height: r*2, 
-          border: `1px solid ${color}`, opacity: `calc(var(--morph-t) * 0.3)`, pointerEvents: 'none',
-          transform: `rotateX(90deg) translateZ(${r}px)`
-        }} />
 
       </div>
     </div>

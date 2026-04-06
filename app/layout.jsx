@@ -1,6 +1,10 @@
 import Script from 'next/script';
 import { Agentation } from 'agentation';
 import './globals.css';
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata = {
   title: 'Thinking State — One World · One Service',
@@ -9,7 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <head>
         {process.env.NODE_ENV === 'development' && (
           <Script
