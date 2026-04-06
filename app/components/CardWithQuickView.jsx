@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Eye } from 'lucide-react';
 import QuickViewModal from './QuickViewModal';
 
-export default function CardWithQuickView({ label, children }) {
+export default function CardWithQuickView({ label, children, glowFilter = 'none' }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -60,7 +60,9 @@ export default function CardWithQuickView({ label, children }) {
           <Eye size={18} />
         </button>
 
-        {children}
+        <div style={{ filter: glowFilter }}>
+          {children}
+        </div>
       </div>
 
       <QuickViewModal

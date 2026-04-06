@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { hslToRgb } from '../utils/colorUtils';
 
 // Animation helpers
 const easeIO = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -15,6 +16,7 @@ const PHASES = [
 
 export default function SolidMathThinkingState({
   size = 80,
+  color = '#006fcf',
   logo = null,
   running = true,
   speedMultiplier = 1,
@@ -74,7 +76,10 @@ export default function SolidMathThinkingState({
     const cx = size / 2;
     const cy = size / 2;
     const ctx = canvasRef.current?.getContext('2d');
-    
+
+    // Get RGB values from the color prop
+    const rgbColor = hslToRgb(color);
+
     // Set scale for retina displays
     const dpr = window.devicePixelRatio || 1;
     if (canvasRef.current) {
@@ -183,10 +188,10 @@ export default function SolidMathThinkingState({
         const dot = normalizedNx * lightDir.x + normalizedNy * lightDir.y + normalizedNz * lightDir.z;
         const brightness = Math.max(0.2, Math.min(1, 0.4 + dot * 0.6));
 
-        // shade of amex blue: HSV mapping to rgb(0, 111, 207) max -> rgb(0, 40, 80) min
-        const rVal = Math.floor(0 * brightness);
-        const gVal = Math.floor(111 * brightness);
-        const bVal = Math.floor(207 * brightness);
+        // Apply brightness to the RGB color from the color prop
+        const rVal = Math.floor(rgbColor.r * brightness);
+        const gVal = Math.floor(rgbColor.g * brightness);
+        const bVal = Math.floor(rgbColor.b * brightness);
 
         const project = (p) => {
           const scale = perspective / (perspective + p.z);
@@ -228,7 +233,7 @@ export default function SolidMathThinkingState({
 
     tick(performance.now());
     return () => cancelAnimationFrame(animId);
-  }, [running, size]);
+  }, [running, size, color]);
 
   return (
     <div style={{ position: 'relative', width: size, height: size, display: 'inline-flex' }} ref={containerRef}>
