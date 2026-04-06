@@ -18,6 +18,7 @@ import DotParticleThinkingState from './DotParticleThinkingState';
 import Particle3DThinkingState from './Particle3DThinkingState';
 import AsciiGeometricThinkingState from './AsciiGeometricThinkingState';
 import AsciiWireframeThinkingState from './AsciiWireframeThinkingState';
+import CardWithQuickView from './CardWithQuickView';
 import AmexLogo from './AmexLogo';
 
 export default function ComparisonPage() {
@@ -131,14 +132,5 @@ export default function ComparisonPage() {
 }
 
 function Card({ label, children }) {
-  return (
-    <div className="relative flex flex-col items-center justify-center p-8 pt-14 bg-card text-card-foreground shadow-sm border border-border rounded-xl">
-      {label && (
-        <div className="absolute top-4 left-4 text-xs font-semibold tracking-wider uppercase text-muted-foreground">
-          {label}
-        </div>
-      )}
-      {children}
-    </div>
-  );
+  return <CardWithQuickView label={label}>{children}</CardWithQuickView>;
 }
