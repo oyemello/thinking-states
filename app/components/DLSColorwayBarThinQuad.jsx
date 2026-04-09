@@ -1,58 +1,68 @@
 import { Send } from 'lucide-react';
 
-export default function GradientBorderBar({ glowFilter = 'none' }) {
+export default function DLSColorwayBarThinQuad({ glowFilter = 'none' }) {
   return (
     <>
       <style>{`
-        @property --a {
+        @property --angle {
           syntax: '<angle>';
           initial-value: 0deg;
           inherits: false;
         }
 
-        @keyframes gradientRotate {
-          to { --a: 360deg }
+        @keyframes solidPulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+          }
         }
 
-        .gradient-border-bar {
-          --a: 0deg;
-          position: relative;
-          border-radius: 10px;
+        @keyframes gradientPulse {
+          0%, 100% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
         }
 
-        .gradient-border-bar::before {
-          content: '';
+        @keyframes rotateGradient {
+          0% {
+            --angle: 0deg;
+          }
+          100% {
+            --angle: 360deg;
+          }
+        }
+
+        .dls-bar-thin-quad-solid {
           position: absolute;
           inset: 0;
           border-radius: 10px;
-          padding: 2px;
-          background: conic-gradient(
-            from var(--a),
-            hsl(0, 100%, 50%),
-            hsl(60, 100%, 50%),
-            hsl(120, 100%, 50%),
-            hsl(180, 100%, 50%),
-            hsl(240, 100%, 50%),
-            hsl(300, 100%, 50%),
-            hsl(360, 100%, 50%)
-          );
-          -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-          mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#000 0 0);
-          mask-composite: exclude;
-          animation: gradientRotate 10s linear infinite;
+          border: 1px solid #006fcf;
+          animation: solidPulse 3s ease-in-out infinite;
+          pointer-events: none;
+        }
+
+        .dls-bar-thin-quad-gradient {
+          --angle: 0deg;
+          position: absolute;
+          inset: 0;
+          border-radius: 10px;
+          border: 1px solid transparent;
+          padding: 1px;
+          background: linear-gradient(#fff, #fff) padding-box,
+                      conic-gradient(from var(--angle), #006fcf 0%, #2cd2f7 25%, #0015FF 50%, #2cd2f7 75%, #006fcf 100%) border-box;
+          animation: gradientPulse 3s ease-in-out infinite, rotateGradient 8s linear infinite;
           pointer-events: none;
         }
       `}</style>
-
       <div
-        className="gradient-border-bar"
         style={{
           background: 'white',
+          borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -61,10 +71,11 @@ export default function GradientBorderBar({ glowFilter = 'none' }) {
           width: '100%',
           height: '56px',
           position: 'relative',
-          borderRadius: '10px',
           filter: glowFilter,
         }}
       >
+        <div className="dls-bar-thin-quad-solid" />
+        <div className="dls-bar-thin-quad-gradient" />
         <input
           type="text"
           placeholder="Ask your AI Assistant"

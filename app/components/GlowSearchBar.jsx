@@ -1,6 +1,6 @@
 import { Send } from 'lucide-react';
 
-export default function GlowSearchBar() {
+export default function GlowSearchBar({ glowFilter = 'none' }) {
   return (
     <>
       <style>{`
@@ -70,6 +70,7 @@ export default function GlowSearchBar() {
           width: '100%',
           height: '56px',
           boxShadow: 'none',
+          filter: glowFilter,
         }}
     >
       <input

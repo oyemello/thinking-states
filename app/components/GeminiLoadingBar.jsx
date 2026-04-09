@@ -1,6 +1,6 @@
 import { Send } from 'lucide-react';
 
-export default function GeminiLoadingBar() {
+export default function GeminiLoadingBar({ glowFilter = 'none' }) {
   return (
     <>
       <style>{`
@@ -46,6 +46,7 @@ export default function GeminiLoadingBar() {
           width: '100%',
           height: '56px',
           position: 'relative',
+          filter: glowFilter,
         }}
       >
 
@@ -57,7 +58,6 @@ export default function GeminiLoadingBar() {
             background: 'transparent',
             border: 'none',
             outline: 'none',
-            paddingLeft: '24px',
             fontSize: '14px',
             color: '#b3b3b3',
             position: 'relative',

@@ -1,8 +1,8 @@
 import { Sparkles, Send } from 'lucide-react';
 
-export default function AiSearchBar() {
+export default function AiSearchBar({ glowFilter = 'none' }) {
   return (
-    <div className="bg-white border border-[#006fcf] border-solid flex items-center justify-between overflow-clip p-[16px] rounded-[10px] w-full h-[56px]">
+    <div className="bg-white border border-[#006fcf] border-solid flex items-center justify-between overflow-clip p-[16px] rounded-[10px] w-full h-[56px]" style={{ filter: glowFilter }}>
       <Sparkles size={28} className="shrink-0 text-[#006fcf]" />
 
       <input
