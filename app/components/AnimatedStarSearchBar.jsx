@@ -2,7 +2,7 @@
 
 import { Send } from 'lucide-react';
 
-export default function AnimatedStarSearchBar() {
+export default function AnimatedStarSearchBar({ glowFilter = 'none' }) {
   const starSize = {
     small: 12,
     medium: 18,
@@ -10,7 +10,7 @@ export default function AnimatedStarSearchBar() {
   };
 
   return (
-    <div className="bg-white border border-[#006fcf] border-solid flex items-center justify-between overflow-clip p-[16px] rounded-[10px] w-full h-[56px]">
+    <div className="bg-white border border-[#006fcf] border-solid flex items-center justify-between overflow-clip p-[16px] rounded-[10px] w-full h-[56px]" style={{ filter: glowFilter }}>
       {/* Three Animated Stars Icon - 24px Frame */}
       <div style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="flex items-center" style={{ marginLeft: '2px', transform: 'scale(0.85)', transformOrigin: 'center' }}>

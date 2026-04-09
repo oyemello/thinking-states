@@ -1,4 +1,4 @@
-export default function InputBarsCard({ label, children }) {
+export default function InputBarsCard({ label, children, glowFilter = 'none' }) {
   return (
     <div
       style={{
@@ -11,6 +11,7 @@ export default function InputBarsCard({ label, children }) {
         justifyContent: 'center',
         position: 'relative',
         border: '1px solid #e5e7eb',
+        filter: glowFilter,
       }}
     >
       {label && (
