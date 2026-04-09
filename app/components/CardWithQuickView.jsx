@@ -12,6 +12,9 @@ export default function CardWithQuickView({ label, children, glowFilter = 'none'
   const handleCopyCode = async () => {
     if (!componentName) return;
     try {
+      // API routes are not supported on static GitHub Pages. 
+      // In the future, this could be replaced with a static code mapping.
+      /*
       const response = await fetch('/api/get-component', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -23,6 +26,8 @@ export default function CardWithQuickView({ label, children, glowFilter = 'none'
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
       }
+      */
+      console.log('Static export: Code copying via API is disabled.');
     } catch (error) {
       console.error('Failed to copy code:', error);
     }
