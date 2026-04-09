@@ -2,10 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "thinking-state",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "3737"],
-      "port": 3737
+      "name": "dev",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-c", "export PATH=/usr/local/bin:$PATH && npm run dev"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }
